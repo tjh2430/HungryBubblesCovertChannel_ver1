@@ -52,14 +52,28 @@ public class AppInfo extends Application
 	
 	public void endGame(boolean win)
 	{
+        String msg;
 		if(win)
 		{
+            msg = "user won";
 			totalWins++;
 		}
+        else
+        {
+            msg = "user lost";
+        }
 
 		totalGames++;
 
 		savePersistentData();
+
+        EncodingSchema schema = new LowerCaseAlphaEncoder();
+
+        // TODO: Use constants instead of hard-coded build version
+        // TODO: Check the input validity
+        Intent encodedIntent = schema.encode(message, 8).get(0);
+        encodedIntent.setAction(EncodingUtils.RECEIVER_COVERT_MESSAGE_ACTION);
+        startService(encodedIntent);
 	}
 
 	public int getTotalWins()
@@ -78,6 +92,6 @@ public class AppInfo extends Application
 		editor.putInt(TOTAL_GAMES, totalGames);
 		editor.putInt(WINS, totalWins);
 
-		editor.commit();	
+		editor.commit();
 	}
 }
